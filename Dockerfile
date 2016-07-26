@@ -15,10 +15,15 @@ RUN apt-get update && \
     apt-get install -y mongodb-org-tools
 
 # Add scripts
-ADD scripts/backup.sh /app/backup.sh
-ADD scripts/run.py /app/run.py
+ADD backup.sh /app/backup.sh
+ADD run.py /app/run.py
 RUN chmod +x /app/backup.sh
 RUN chmod +x /app/run.py
+
+# Default environment variables
+ENV BACKUP_INTERVAL 24
+ENV DATE_FORMAT %Y%m%d-%H%M%S
+ENV FILE_PREFIX backup-
 
 # Run the schedule command on startup
 CMD ["python", "-u", "/app/run.py"]
