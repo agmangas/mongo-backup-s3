@@ -7,14 +7,13 @@ set -e
 : ${S3_BUCKET:?}
 : ${AWS_ACCESS_KEY_ID:?}
 : ${AWS_SECRET_ACCESS_KEY:?}
+: ${DATE_FORMAT:?}
+: ${FILE_PREFIX:?}
 
 FOLDER=/backup
-DUMPOUT=dump
+DUMP_OUT=dump
 
-DATEFORMAT=${DATEFORMAT-"%Y%m%d-%H%M%S"}
-FILEPREFIX=${FILEPREFIX-"backup-"}
-
-FILENAME=${FILEPREFIX}$(date -u +${DATEFORMAT}).tar.gz
+FILE_NAME=${FILE_PREFIX}$(date -u +${DATE_FORMAT}).tar.gz
 
 echo "Creating backup folder..."
 
@@ -22,14 +21,14 @@ mkdir -p ${FOLDER} && cd ${FOLDER}
 
 echo "Starting backup..."
 
-mongodump --host=${MONGO_HOST} --db=${MONGO_DB} --out=${DUMPOUT}
+mongodump --host=${MONGO_HOST} --db=${MONGO_DB} --out=${DUMP_OUT}
 
 echo "Compressing backup..."
 
-tar -zcvf ${FILENAME} ${DUMPOUT} && rm -fr ${DUMPOUT}
+tar -zcvf ${FILE_NAME} ${DUMP_OUT} && rm -fr ${DUMP_OUT}
 
 echo "Uploading to S3..."
 
-aws s3api put-object --bucket ${S3_BUCKET} --key ${FILENAME} --body ${FILENAME}
+aws s3api put-object --bucket ${S3_BUCKET} --key ${FILE_NAME} --body ${FILE_NAME}
 
 echo "Done!"
