@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     print("Executing backups every {} hours".format(interval_hours))
 
-    schedule.every(interval_hours).minutes.do(backup_job)
+    schedule.every(interval_hours).hours.do(backup_job)
 
     while True:
         schedule.run_pending()
