@@ -6,17 +6,18 @@ Script that runs a MongoDB backup job periodically according
 to the interval defined by the INTERVAL_NAME environment variable.
 """
 
-import schedule
 import time
 import datetime
 import subprocess
 import functools
 import traceback
 import os
+import sys
+
+import schedule
 
 BACKUP_SCRIPT_PATH = "/app/backup.sh"
 INTERVAL_NAME = "BACKUP_INTERVAL"
-INTERVAL_DEFAULT = 24
 
 
 def catch_exceptions(job_func):
@@ -42,9 +43,9 @@ if __name__ == "__main__":
     print("Starting periodic MongoDB backup")
 
     try:
-        interval_hours = int(os.environ.get(INTERVAL_NAME, INTERVAL_DEFAULT))
+        interval_hours = int(os.environ.get(INTERVAL_NAME))
     except:
-        interval_hours = INTERVAL_DEFAULT
+        raise ValueError("Undefined or invalid interval variable: {}".format(INTERVAL_NAME))
 
     print("Executing backups every {} hours".format(interval_hours))
 
