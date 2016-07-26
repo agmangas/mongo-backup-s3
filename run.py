@@ -12,12 +12,13 @@ import subprocess
 import functools
 import traceback
 import os
-import sys
 
 import schedule
 
 BACKUP_SCRIPT_PATH = "/app/backup.sh"
-INTERVAL_NAME = "BACKUP_INTERVAL"
+ENV_BACKUP_INTERVAL = "BACKUP_INTERVAL"
+ENV_BACKUP_TIME = "BACKUP_TIME"
+TIME_FORMAT = "%H:%M"
 
 
 def catch_exceptions(job_func):
@@ -40,16 +41,22 @@ def backup_job():
 
 
 if __name__ == "__main__":
-    print("Starting periodic MongoDB backup")
+    print("Starting periodic MongoDB backup at {}".format(datetime.datetime.now().isoformat()))
 
     try:
-        interval_hours = int(os.environ.get(INTERVAL_NAME))
+        interval_days = int(os.environ.get(ENV_BACKUP_INTERVAL))
     except:
-        raise ValueError("Undefined or invalid interval variable: {}".format(INTERVAL_NAME))
+        raise ValueError("Undefined or invalid var: {}".format(ENV_BACKUP_INTERVAL))
 
-    print("Executing backups every {} hours".format(interval_hours))
+    try:
+        backup_time = os.environ.get(ENV_BACKUP_TIME)
+        datetime.datetime.strptime(backup_time, TIME_FORMAT)
+    except:
+        raise ValueError("Undefined or invalid var: {}".format(ENV_BACKUP_TIME))
 
-    schedule.every(interval_hours).hours.do(backup_job)
+    print("Executing backups every {} day/s at {}".format(interval_days, backup_time))
+
+    schedule.every(interval_days).days.at(backup_time).do(backup_job)
 
     while True:
         schedule.run_pending()
