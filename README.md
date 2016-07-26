@@ -22,7 +22,7 @@ Name | Description | Default
 
 ## Example
 
-The following command starts a *mongo-s3-backup* container that will stay in the background uploading backups of the *testdb* database on the *my-mongo-host* MongoDB instance every hour. The backups will be uploaded to an S3 bucket named *my-s3-bucket*:
+The following command starts a *mongo-s3-backup* container that will stay in the background uploading backups of the *testdb* database on the *my-mongo-host* MongoDB instance every day at 2:00. The backups will be uploaded to an S3 bucket named *my-s3-bucket*:
 
 ```
 docker run -d -e MONGO_HOST=my-mongo-host -e MONGO_DB=testdb -e S3_BUCKET=my-s3-bucket -e AWS_ACCESS_KEY_ID=<your_access_key> -e AWS_SECRET_ACCESS_KEY=<your_access_secret> -e BACKUP_INTERVAL=1 --name mongo_backups agmangas/mongo-backup-s3
