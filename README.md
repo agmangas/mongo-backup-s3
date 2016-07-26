@@ -18,3 +18,11 @@ Name | Description | Default
 `BACKUP_INTERVAL` | Interval between each backup (hours) | 24
 `DATE_FORMAT` | Date format string used as the suffix of the backup filename | `%Y%m%d-%H%M%S`
 `FILE_PREFIX` | Prefix of the backup filename | `backup-`
+
+## Example
+
+The following command starts a *mongodb-s3-backup* container that will stay in the background uploading backups of the *testdb* database on the *my-mongo-host* MongoDB instance every hour. The backups will be uploaded to an S3 bucket named *my-s3-bucket*:
+
+```
+docker run -d -e MONGO_HOST=my-mongo-host -e MONGO_DB=testdb -e S3_BUCKET=my-s3-bucket -e AWS_ACCESS_KEY_ID=<your_access_key> -e AWS_SECRET_ACCESS_KEY=<your_access_secret> -e BACKUP_INTERVAL=1 --name mongo_backups agmangas/mongodb-backup-s3
+```
