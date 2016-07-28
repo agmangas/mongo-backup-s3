@@ -17,7 +17,7 @@ FILE_NAME=${FILE_PREFIX}$(date -u +${DATE_FORMAT}).tar.gz
 
 echo "Creating backup folder..."
 
-mkdir -p ${FOLDER} && cd ${FOLDER}
+rm -fr ${FOLDER} && mkdir -p ${FOLDER} && cd ${FOLDER}
 
 echo "Starting backup..."
 
@@ -30,5 +30,9 @@ tar -zcvf ${FILE_NAME} ${DUMP_OUT} && rm -fr ${DUMP_OUT}
 echo "Uploading to S3..."
 
 aws s3api put-object --bucket ${S3_BUCKET} --key ${FILE_NAME} --body ${FILE_NAME}
+
+echo "Removing backup file..."
+
+rm -f ${FILE_NAME}
 
 echo "Done!"
